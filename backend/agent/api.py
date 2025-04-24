@@ -466,9 +466,7 @@ async def stream_agent_run(
 
             if current_status != 'running':
                 logger.info(f"Agent run {agent_run_id} is not running (status: {current_status}). Ending stream.")
-                # Send a final status message if not already in the initial list
-                if not any(r.get('type') == 'status' and r.get('status') in ['completed', 'failed', 'stopped'] for r in initial_responses):
-                     yield f"data: {json.dumps({'type': 'status', 'status': 'completed', 'message': f'Run finished with status: {current_status}'})}\n\n"
+                yield f"data: {json.dumps({'type': 'status', 'status': 'completed'})}\n\n"
                 return
 
             # 3. Set up Pub/Sub listeners for new responses and control signals
