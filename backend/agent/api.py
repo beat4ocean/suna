@@ -555,14 +555,13 @@ async def stream_agent_run(
                     elif queue_item["type"] == "control":
                         control_signal = queue_item["data"]
                         terminate_stream = True # Stop the stream on any control signal
-                        final_status = 'stopped' if control_signal == 'STOP' else 'completed' if control_signal == 'END_STREAM' else 'error'
-                        yield f"data: {json.dumps({'type': 'status', 'status': final_status, 'message': f'Stream terminated by control signal: {control_signal}'})}\n\n"
+                        yield f"data: {json.dumps({'type': 'status', 'status': control_signal})}\n\n"
                         break
 
                     elif queue_item["type"] == "error":
                         logger.error(f"Listener error for {agent_run_id}: {queue_item['data']}")
                         terminate_stream = True
-                        yield f"data: {json.dumps({'type': 'status', 'status': 'error', 'message': f'Stream failed due to listener error: {queue_item['data']}'})}\n\n"
+                        yield f"data: {json.dumps({'type': 'status', 'status': 'error'})}\n\n"
                         break
 
                 except asyncio.CancelledError:
